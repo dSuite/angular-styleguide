@@ -32,7 +32,6 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   1. [File Templates and Snippets](#file-templates-and-snippets)
   1. [Yeoman Generator](#yeoman-generator)
   1. [Routing](#routing)
-  1. [Task Automation](#task-automation)
   1. [Filters](#filters)
   1. [Angular Docs](#angular-docs)
   1. [Contributing](#contributing)
