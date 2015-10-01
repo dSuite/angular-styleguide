@@ -24,7 +24,6 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   1. [Startup Logic](#startup-logic)
   1. [Angular $ Wrapper Services](#angular--wrapper-services)
   1. [Testing](#testing)
-  1. [Animations](#animations)
   1. [Comments](#comments)
   1. [JSHint](#js-hint)
   1. [JSCS](#jscs)
@@ -2537,39 +2536,6 @@ Unit testing helps maintain clean code, as such I included some of my recommenda
                              /customers.route.js
                              /customers.route.spec.js
     ```
-
-**[Back to top](#table-of-contents)**
-
-## Animations
-
-### Usage
-###### [Style [Y210](#style-y210)]
-
-  - Use subtle [animations with Angular](https://docs.angularjs.org/guide/animations) to transition between states for views and primary visual elements. Include the [ngAnimate module](https://docs.angularjs.org/api/ngAnimate). The 3 keys are subtle, smooth, seamless.
-
-    *Why?*: Subtle animations can improve User Experience when used appropriately.
-
-    *Why?*: Subtle animations can improve perceived performance as views transition.
-
-### Sub Second
-###### [Style [Y211](#style-y211)]
-
-  - Use short durations for animations. I generally start with 300ms and adjust until appropriate.
-
-    *Why?*: Long animations can have the reverse affect on User Experience and perceived performance by giving the appearance of a slow application.
-
-### animate.css
-###### [Style [Y212](#style-y212)]
-
-  - Use [animate.css](http://daneden.github.io/animate.css/) for conventional animations.
-
-    *Why?*: The animations that animate.css provides are fast, smooth, and easy to add to your application.
-
-    *Why?*: Provides consistency in your animations.
-
-    *Why?*: animate.css is widely used and tested.
-
-    Note: See this [great post by Matias Niemelä on Angular animations](http://www.yearofmoo.com/2013/08/remastered-animation-in-angularjs-1-2.html)
 
 **[Back to top](#table-of-contents)**
 
