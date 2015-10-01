@@ -30,7 +30,6 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   1. [JSCS](#jscs)
   1. [Constants](#constants)
   1. [File Templates and Snippets](#file-templates-and-snippets)
-  1. [Yeoman Generator](#yeoman-generator)
   1. [Routing](#routing)
   1. [Filters](#filters)
   1. [Angular Docs](#angular-docs)
@@ -2998,32 +2997,6 @@ Use file templates or snippets to help follow consistent styles and patterns. He
     ngmodule     // creates an Angular module
     ngservice    // creates an Angular service
     ```
-
-**[Back to top](#table-of-contents)**
-
-## Yeoman Generator
-###### [Style [Y260](#style-y260)]
-
-You can use the [HotTowel yeoman generator](http://jpapa.me/yohottowel) to create an app that serves as a starting point for Angular that follows this style guide.
-
-1. Install generator-hottowel
-
-  ```
-  npm install -g generator-hottowel
-  ```
-
-2. Create a new folder and change directory to it
-
-  ```
-  mkdir myapp
-  cd myapp
-  ```
-
-3. Run the generator
-
-  ```
-  yo hottowel helloWorld
-  ```
 
 **[Back to top](#table-of-contents)**
 
