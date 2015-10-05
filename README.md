@@ -329,7 +329,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### controllerAs with vm
 ###### [Style [Y032](#style-y032)]
 
-  - Use a capture variable for `this` when using the `controllerAs` syntax. Choose a consistent variable name such as `self`, which stands for ViewModel.
+  - Use a capture variable for `this` when using the `controllerAs` syntax. Choose a consistent variable name such as `viewModel`.
 
   *Why?*: The `this` keyword is contextual and when used within a function inside a controller may change its context. Capturing the context of `this` avoids encountering this problem.
 
@@ -344,9 +344,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   ```javascript
   /* recommended */
   function CustomerController() {
-      var self = this;
-      self.name = {};
-      self.sendMessage = function() { };
+      var viewModel = this;
+      viewModel.name = {};
+      viewModel.sendMessage = function() { };
   }
   ```
 
@@ -354,23 +354,23 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
   ```javascript
   /* jshint validthis: true */
-  var self = this;
+  var viewModel = this;
   ```
 
-  Note: When creating watches in a controller using `controller as`, you can watch the `self.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
+  Note: When creating watches in a controller using `controller as`, you can watch the `viewModel.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
 
   ```html
-  <input ng-model="self.title"/>
+  <input ng-model="viewModel.title"/>
   ```
 
   ```javascript
   function SomeController($scope, $log) {
-      var self = this;
-      self.title = 'Some Title';
+      var viewModel = this;
+      viewModel.title = 'Some Title';
 
-      $scope.$watch('self.title', function(current, original) {
-          $log.info('self.title was %s', original);
-          $log.info('self.title is now %s', current);
+      $scope.$watch('viewModel.title', function(current, original) {
+          $log.info('viewModel.title was %s', original);
+          $log.info('viewModel.title is now %s', current);
       });
   }
   ```
