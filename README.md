@@ -806,12 +806,12 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
     *Why?*: DOM manipulation can be difficult to test, debug, and there are often better ways (e.g. CSS, animations, templates)
 
-### Provide a Unique Directive Prefix
+### Use ma as directive prefix
 ###### [Style [Y073](#style-y073)]
 
-  - Provide a short, unique and descriptive directive prefix such as `acmeSalesCustomerInfo` which would be declared in HTML as `acme-sales-customer-info`.
+  - Any directive in be application must be prefixed with `ma-` (Marketing Analytics) like in HTML `ma-sales-customer-info` and in modules `maSalesCustomerInfo`.
 
-    *Why?*: The unique short prefix identifies the directive's context and origin. For example a prefix of `cc-` may indicate that the directive is part of a CodeCamper app while `acme-` may indicate a directive for the Acme company.
+    *Why?*: The unique short prefix identifies the directive's context and origin and avoids name collisions with directives from other external modules.
 
     Note: Avoid `ng-` as these are reserved for Angular directives. Research widely used directives to avoid naming conflicts, such as `ion-` for the [Ionic Framework](http://ionicframework.com/).
 
