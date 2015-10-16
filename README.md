@@ -324,7 +324,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   }
   ```
 
-### controllerAs with viewModel
+### controllerAs with this in ES6
 ###### [Style [Y032](#style-y032)]
 
   - Avoid using a capture variable for `this` when using the `controllerAs` syntax in ES6.
@@ -390,12 +390,11 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
   /* avoid */
   function OrderController($http, $q, config, userInfo) {
-      var viewModel = this;
-      viewModel.checkCredit = checkCredit;
-      viewModel.isCreditOk;
-      viewModel.total = 0;
+      this.checkCredit = checkCredit;
+      this.isCreditOk;
+      this.total = 0;
 
-      function checkCredit() {
+      let checkCredit = () => {
           var settings = {};
           // Get the credit service base URL from config
           // Set credit service required headers
@@ -406,7 +405,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
               .then(function(data) {
                // Unpack JSON data in the response object
                  // to find maxRemainingAmount
-                 viewModel.isCreditOk = vm.total <= maxRemainingAmount
+                 this.isCreditOk = vm.total <= maxRemainingAmount
               })
               .catch(function(error) {
                  // Interpret error
@@ -420,16 +419,14 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   ```javascript
   /* recommended */
   function OrderController(creditService) {
-      var viewModel = this;
-      viewModel.checkCredit = checkCredit;
-      viewModel.isCreditOk;
-      viewModel.total = 0;
-
-      function checkCredit() {
+      this.checkCredit = () => {
          return creditService.isOrderTotalOk(viewModel.total)
-            .then(function(isOk) { viewModel.isCreditOk = isOk; })
-            .catch(showError);
+            .then(function(isOk) { this.isCreditOk = isOk; })
+            .catch(showError);        
       };
+      this.isCreditOk;
+      this.total = 0;
+
   }
   ```
 
@@ -634,8 +631,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   AvengersController.$inject = ['dataservice', 'logger'];
 
   function AvengersController(dataservice, logger) {
-      var viewModel = this;
-      viewModel.avengers = [];
+      this.avengers = [];
 
       activate();
 
@@ -645,11 +641,11 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
           });
       }
 
-      function getAvengers() {
+      let getAvengers = () => {
           return dataservice.getAvengers()
-              .then(function(data) {
-                  viewModel.avengers = data;
-                  return viewModel.avengers;
+              .then((data) => {
+                  this.avengers = data;
+                  return this.avengers;
               });
       }
   }
@@ -964,12 +960,11 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   angular
       .module('app')
       .controller('AvengersController', function(movieService) {
-          var viewModel = this;
           // unresolved
-          viewModel.movies;
+          this.movies;
           // resolved asynchronously
-          movieService.getMovies().then(function(response) {
-              viewModel.movies = response.movies;
+          movieService.getMovies().then((response) => {
+              this.movies = response.movies;
           });
       });
 
