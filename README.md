@@ -327,32 +327,33 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### controllerAs with viewModel
 ###### [Style [Y032](#style-y032)]
 
-  - Use a capture variable for `this` when using the `controllerAs` syntax. Choose a consistent variable name such as `viewModel`.
+  - Avoid using a capture variable for `this` when using the `controllerAs` syntax in ES6.
 
-  *Why?*: The `this` keyword is contextual and when used within a function inside a controller may change its context. Capturing the context of `this` avoids encountering this problem.
+  *Why?*: Use ES6 arrow functions when necessary to access the `this` value lexically.
 
   ```javascript
-  /* avoid */
-  function CustomerController() {
-      this.name = {};
-      this.sendMessage = function() { };
-  }
+    // avoid
+    function MainCtrl () {
+      let vm = this;
+      let doSomething = arg => {
+        console.log(vm);
+      };
+    
+      // exports
+      vm.doSomething = doSomething;
+    }
   ```
 
   ```javascript
-  /* recommended */
-  function CustomerController() {
-      var viewModel = this;
-      viewModel.name = {};
-      viewModel.sendMessage = function() { };
-  }
-  ```
-
-  Note: You can avoid any [jshint](http://www.jshint.com/) warnings by placing the comment above the line of code. However it is not needed when the function is named using UpperCasing, as this convention means it is a constructor function, which is what a controller is in Angular.
-
-  ```javascript
-  /* jshint validthis: true */
-  var viewModel = this;
+    // recommended
+    function MainCtrl () {
+    
+      // exports
+      this.doSomething = arg => {
+        console.log(this);
+      };
+    
+    }
   ```
 
   Note: When creating watches in a controller using `controller as`, you can watch the `viewModel.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
@@ -363,8 +364,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
   ```javascript
   function SomeController($scope, $log) {
-      var viewModel = this;
-      viewModel.title = 'Some Title';
+      this.title = 'Some Title';
 
       $scope.$watch('viewModel.title', function(current, original) {
           $log.info('viewModel.title was %s', original);
