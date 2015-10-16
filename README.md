@@ -1254,7 +1254,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### Naming Guidelines
 ###### [Style [Y120](#style-y120)]
 
-  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`. There are 2 names for most assets:
+  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. There are 2 names for most assets:
     * the file name (`avengers.controller.js`)
     * the registered component name with Angular (`AvengersController`)
 
@@ -1265,7 +1265,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### Feature File Names
 ###### [Style [Y121](#style-y121)]
 
-  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `feature.type.js`.
+  - Use consistent names for all components following a pattern that describes the component's feature then (optionally) its type. My recommended pattern is `module.feature.subtype.type.js`.
 
     *Why?*: Provides a consistent way to quickly identify components.
 
@@ -1273,33 +1273,8 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
     ```javascript
     /**
-     * common options
-     */
-
-    // Controllers
-    avengers.js
-    avengers.controller.js
-    avengersController.js
-
-    // Services/Factories
-    logger.js
-    logger.service.js
-    loggerService.js
-    ```
-
-    ```javascript
-    /**
      * recommended
      */
-
-    // controllers
-    avengers.controller.js
-    avengers.controller.spec.js
-
-    // services/factories
-    logger.service.js
-    logger.service.spec.js
-
     // constants
     constants.js
 
@@ -1314,19 +1289,13 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     avengers.config.js
 
     // directives
-    avenger-profile.directive.js
-    avenger-profile.directive.spec.js
-    ```
+    avengers.avenger-profile.component.directive.js
+    
+    // controllers
+    avengers.controller.js
 
-  Note: Another common convention is naming controller files without the word `controller` in the file name such as `avengers.js` instead of `avengers.controller.js`. All other conventions still hold using a suffix of the type. Controllers are the most common type of component so this just saves typing and is still easily identifiable. I recommend you choose 1 convention and be consistent for your team. My preference is `avengers.controller.js` identifying the `AvengersController`.
-
-    ```javascript
-    /**
-     * recommended
-     */
-    // Controllers
-    avengers.js
-    avengers.spec.js
+    // services/Factories
+    avengers.logger.service.js
     ```
 
 ### Test File Names
@@ -1393,13 +1362,11 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### Factory and Service Names
 ###### [Style [Y125](#style-y125)]
 
-  - Use consistent names for all factories and services named after their feature. Use camel-casing for services and factories. Avoid prefixing factories and services with `$`. Only suffix service and factories with `Service` when it is not clear what they are (i.e. when they are nouns).
+  - Use consistent names for all factories and services named after their feature. Use camel-casing for services and factories. Avoid prefixing factories and services with `$`. Always suffix service and factories with `Service`.
 
     *Why?*: Provides a consistent way to quickly identify and reference factories.
 
     *Why?*: Avoids name collisions with built-in factories and services that use the `$` prefix.
-
-    *Why?*: Clear service names such as `logger` do not require a suffix.
 
     *Why?*: Service names such as `avengers` are nouns and require a suffix and should be named `avengersService`.
 
@@ -1411,7 +1378,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // logger.service.js
     angular
         .module
-        .factory('logger', logger);
+        .factory('loggerService', loggerService);
 
     function logger() { }
     ```
@@ -1448,14 +1415,16 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
      * recommended
      */
 
-    // avenger-profile.directive.js
+    // avengers.avenger-profile.directive.component.js
     angular
         .module
-        .directive('xxAvengerProfile', xxAvengerProfile);
+        .directive('xxAvengerProfileCp', function(){
+            /* */
+        });
 
-    // usage is <xx-avenger-profile> </xx-avenger-profile>
+    // usage is <xx-avenger-profile-cp> </xx-avenger-profile-cp>
 
-    function xxAvengerProfile() { }
+    function xxAvengerProfileCp() { }
     ```
 
 ### Modules
