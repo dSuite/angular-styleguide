@@ -1362,25 +1362,26 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### Factory and Service Names
 ###### [Style [Y125](#style-y125)]
 
-  - Use consistent names for all factories and services named after their feature. Use camel-casing for services and factories. Avoid prefixing factories and services with `$`. Always suffix service and factories with `Service`.
+  - Use consistent names for all factories and services named after their feature. Use camel-casing for services and factories. Avoid prefixing factories and services with `$`. Always prefix service and factories with module prefix. Always suffix service and factories with `Service`.
 
     *Why?*: Provides a consistent way to quickly identify and reference factories.
 
     *Why?*: Avoids name collisions with built-in factories and services that use the `$` prefix.
 
-    *Why?*: Service names such as `avengers` are nouns and require a suffix and should be named `avengersService`.
+    *Why?*: Service names such as `avengers` are nouns and require a suffix and should be named `avAvengersService`.
 
     ```javascript
     /**
      * recommended
      */
 
-    // logger.service.js
+    // avengers.logger.service.js
     angular
         .module
-        .factory('loggerService', loggerService);
+        .factory('avLoggerService', function(){
+            /* */
+        });
 
-    function logger() { }
     ```
 
     ```javascript
@@ -1388,19 +1389,20 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
      * recommended
      */
 
-    // credit.service.js
+    // avengers.credit.service.js
     angular
         .module
-        .factory('creditService', creditService);
+        .factory('avCreditService', function(){
+            /* */
+        });
 
-    function creditService() { }
-
-    // customer.service.js
+    // avengers.customer.service.js
     angular
         .module
-        .service('customerService', customerService);
+        .service('avCustomerService', function(){
+            /* */
+        });
 
-    function customerService() { }
     ```
 
 ### Directive Component Names
