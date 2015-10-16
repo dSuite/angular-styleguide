@@ -877,84 +877,46 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   }
   ```
 
-### Directives and ControllerAs
+### Directives schema
 ###### [Style [Y075](#style-y075)]
 
-  - Use `controller as` syntax with a directive to be consistent with using `controller as` with view and controller pairings.
-
-    *Why?*: It makes sense and it's not difficult.
-
-    Note: The directive below demonstrates some of the ways you can use scope inside of link and directive controllers, using controllerAs. I in-lined the template just to keep it all in one place.
-
-    Note: Regarding dependency injection, see [Manually Identify Dependencies](#manual-annotating-for-dependency-injection).
-
-    Note: Note that the directive's controller is outside the directive's closure. This style eliminates issues where the injection gets created as unreachable code after a `return`.
+  - Use this schema for directives :
 
   ```html
-  <div my-example max="77"></div>
+  <div ma-cp-my-example max="77"></div>
   ```
 
   ```javascript
   angular
       .module('app')
-      .directive('myExample', myExample);
+      .directive('maCpMyExample', ["myDependency", function (myDependency) {
+          return {
+              restrict: 'E',
+              templateUrl: "client/modules/my-module/ma.my-module.my-example.component.ng.html",
+              replace: true,
+              scope: {
+                  tiles: "=",
+                  cache: "="
+              },
+              link: function (scope, element, attrs) {
+                scope.viewModel = {};
+                /* */
+              }
+          };
+      }]);
 
-  function myExample() {
-      var directive = {
-          restrict: 'EA',
-          templateUrl: 'app/feature/example.directive.html',
-          scope: {
-              max: '='
-          },
-          link: linkFunc,
-          controller: ExampleController,
-          controllerAs: 'vm',
-          bindToController: true // because the scope is isolated
-      };
-
-      return directive;
-
-      function linkFunc(scope, el, attr, ctrl) {
-          console.log('LINK: scope.min = %s *** should be undefined', scope.min);
-          console.log('LINK: scope.max = %s *** should be undefined', scope.max);
-          console.log('LINK: scope.vm.min = %s', scope.vm.min);
-          console.log('LINK: scope.vm.max = %s', scope.vm.max);
-      }
-  }
-
-  ExampleController.$inject = ['$scope'];
-
-  function ExampleController($scope) {
-      // Injecting $scope just for comparison
-      var vm = this;
-
-      vm.min = 3;
-
-      console.log('CTRL: $scope.vm.min = %s', $scope.vm.min);
-      console.log('CTRL: $scope.vm.max = %s', $scope.vm.max);
-      console.log('CTRL: vm.min = %s', vm.min);
-      console.log('CTRL: vm.max = %s', vm.max);
-  }
   ```
 
   ```html
   <!-- example.directive.html -->
   <div>hello world</div>
-  <div>max={{vm.max}}<input ng-model="vm.max"/></div>
-  <div>min={{vm.min}}<input ng-model="vm.min"/></div>
+  <div>max={{vm.max}}<input ng-model="viewModel.max"/></div>
+  <div>min={{vm.min}}<input ng-model="viewModel.min"/></div>
   ```
 
-    Note: You can also name the controller when you inject it into the link function and access directive attributes as properties of the controller.
-
-  ```javascript
-  // Alternative to above example
-  function linkFunc(scope, el, attr, vm) {
-      console.log('LINK: scope.min = %s *** should be undefined', scope.min);
-      console.log('LINK: scope.max = %s *** should be undefined', scope.max);
-      console.log('LINK: vm.min = %s', vm.min);
-      console.log('LINK: vm.max = %s', vm.max);
-  }
-  ```
+    Note: Attribute directives are named `ma-at-my-example`.
+    
+    Note: directives that use a template should always replace directive element with template using `replace:true` in configuration.
 
 **[Back to top](#table-of-contents)**
 
