@@ -47,12 +47,13 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app', ['ngRoute'])
-      .controller('SomeController', SomeController)
-      .factory('someFactory', someFactory);
+      .controller('SomeController', function(){
+          /* */
+      })
+      .factory('someFactory', function(){
+          /* */
+      });
 
-  function SomeController() { }
-
-  function someFactory() { }
   ```
 
   The same components are now separated into their own files.
@@ -71,9 +72,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // someController.js
   angular
       .module('app')
-      .controller('SomeController', SomeController);
+      .controller('SomeController', function(){
+          /* */
+      });
 
-  function SomeController() { }
   ```
 
   ```javascript
@@ -82,9 +84,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // someFactory.js
   angular
       .module('app')
-      .factory('someFactory', someFactory);
+      .factory('someFactory', function(){
+          /* */
+      });
 
-  function someFactory() { }
   ```
 
 **[Back to top](#table-of-contents)**
@@ -131,9 +134,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
       angular
           .module('app')
-          .factory('logger', logger);
+          .factory('logger', function(){
+              /* */
+          });
 
-      function logger() { }
   })();
 
   // storage.js
@@ -142,9 +146,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
       angular
           .module('app')
-          .factory('storage', storage);
+          .factory('storage', function(){
+              /* */
+          });
 
-      function storage() { }
   })();
   ```
 
@@ -203,18 +208,20 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   ```javascript
   /* avoid */
   var app = angular.module('app');
-  app.controller('SomeController', SomeController);
+  app.controller('SomeController', function(){
+    /* */
+  });
 
-  function SomeController() { }
   ```
 
   ```javascript
   /* recommended */
   angular
       .module('app')
-      .controller('SomeController', SomeController);
+      .controller('SomeController', function(){
+          /* */
+      });
 
-  function SomeController() { }
   ```
 
 ### Setting vs Getting
@@ -237,36 +244,28 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 ### Named vs Anonymous Functions
 ###### [Style [Y024](#style-y024)]
 
-  - Use named functions instead of passing an anonymous function in as a callback.
+  - Use anonymous functions as a callback instead of declaring callbacks.
 
-  *Why?*: This produces more readable code, is much easier to debug, and reduces the amount of nested callback code.
+  *Why?*: This produces more readable code, is much easier to debug, and avoids logic to be scattered in the file.
 
   ```javascript
   /* avoid */
-  angular
-      .module('app')
-      .controller('DashboardController', function() { })
-      .factory('logger', function() { });
-  ```
-
-  ```javascript
-  /* recommended */
-
-  // dashboard.js
+  
   angular
       .module('app')
       .controller('DashboardController', DashboardController);
 
-  function DashboardController() { }
+  function DashboardController() { }  
   ```
 
   ```javascript
-  // logger.js
+  /* recommended */
+  
   angular
       .module('app')
-      .factory('logger', logger);
-
-  function logger() { }
+      .controller('DashboardController', function() {
+          /* */
+      });
   ```
 
 **[Back to top](#table-of-contents)**
@@ -325,7 +324,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   }
   ```
 
-### controllerAs with vm
+### controllerAs with viewModel
 ###### [Style [Y032](#style-y032)]
 
   - Use a capture variable for `this` when using the `controllerAs` syntax. Choose a consistent variable name such as `viewModel`.
@@ -391,10 +390,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
   /* avoid */
   function OrderController($http, $q, config, userInfo) {
-      var vm = this;
-      vm.checkCredit = checkCredit;
-      vm.isCreditOk;
-      vm.total = 0;
+      var viewModel = this;
+      viewModel.checkCredit = checkCredit;
+      viewModel.isCreditOk;
+      viewModel.total = 0;
 
       function checkCredit() {
           var settings = {};
@@ -407,7 +406,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
               .then(function(data) {
                // Unpack JSON data in the response object
                  // to find maxRemainingAmount
-                 vm.isCreditOk = vm.total <= maxRemainingAmount
+                 viewModel.isCreditOk = vm.total <= maxRemainingAmount
               })
               .catch(function(error) {
                  // Interpret error
@@ -421,14 +420,14 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   ```javascript
   /* recommended */
   function OrderController(creditService) {
-      var vm = this;
-      vm.checkCredit = checkCredit;
-      vm.isCreditOk;
-      vm.total = 0;
+      var viewModel = this;
+      viewModel.checkCredit = checkCredit;
+      viewModel.isCreditOk;
+      viewModel.total = 0;
 
       function checkCredit() {
-         return creditService.isOrderTotalOk(vm.total)
-            .then(function(isOk) { vm.isCreditOk = isOk; })
+         return creditService.isOrderTotalOk(viewModel.total)
+            .then(function(isOk) { viewModel.isCreditOk = isOk; })
             .catch(showError);
       };
   }
@@ -507,28 +506,26 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // service
   angular
       .module('app')
-      .service('logger', logger);
+      .service('logger', function(){
+          this.logError = function(msg) {
+            /* */
+          };
+      });
 
-  function logger() {
-    this.logError = function(msg) {
-      /* */
-    };
-  }
   ```
 
   ```javascript
   // factory
   angular
       .module('app')
-      .factory('logger', logger);
+      .factory('logger', function(){
+          return {
+              logError: function(msg) {
+                /* */
+              }
+         };
+      });
 
-  function logger() {
-      return {
-          logError: function(msg) {
-            /* */
-          }
-     };
-  }
   ```
 
 **[Back to top](#table-of-contents)**
@@ -637,8 +634,8 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   AvengersController.$inject = ['dataservice', 'logger'];
 
   function AvengersController(dataservice, logger) {
-      var vm = this;
-      vm.avengers = [];
+      var viewModel = this;
+      viewModel.avengers = [];
 
       activate();
 
@@ -651,8 +648,8 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
       function getAvengers() {
           return dataservice.getAvengers()
               .then(function(data) {
-                  vm.avengers = data;
-                  return vm.avengers;
+                  viewModel.avengers = data;
+                  return viewModel.avengers;
               });
       }
   }
@@ -725,25 +722,20 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
       .module('app.widgets')
 
       /* order directive that is specific to the order module */
-      .directive('orderCalendarRange', orderCalendarRange)
+      .directive('orderCalendarRange', function(){
+          /* */
+      })
 
       /* sales directive that can be used anywhere across the sales app */
-      .directive('salesCustomerInfo', salesCustomerInfo)
+      .directive('salesCustomerInfo', function(){
+          /* */
+      })
 
       /* spinner directive that can be used anywhere across apps */
-      .directive('sharedSpinner', sharedSpinner);
+      .directive('sharedSpinner', function(){
+          /* */
+      });
 
-  function orderCalendarRange() {
-      /* implementation details */
-  }
-
-  function salesCustomerInfo() {
-      /* implementation details */
-  }
-
-  function sharedSpinner() {
-      /* implementation details */
-  }
   ```
 
   ```javascript
@@ -756,11 +748,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('sales.order')
-      .directive('acmeOrderCalendarRange', orderCalendarRange);
+      .directive('acmeOrderCalendarRange', function(){
+          /* */
+      });
 
-  function orderCalendarRange() {
-      /* implementation details */
-  }
   ```
 
   ```javascript
@@ -773,11 +764,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('sales.widgets')
-      .directive('acmeSalesCustomerInfo', salesCustomerInfo);
+      .directive('acmeSalesCustomerInfo', function(){
+          /* */
+      });
 
-  function salesCustomerInfo() {
-      /* implementation details */
-  }
   ```
 
   ```javascript
@@ -790,11 +780,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('shared.widgets')
-      .directive('acmeSharedSpinner', sharedSpinner);
+      .directive('acmeSharedSpinner', function(){
+          /* */
+      });
 
-  function sharedSpinner() {
-      /* implementation details */
-  }
   ```
 
     Note: There are many naming options for directives, especially since they can be used in narrow or wide scopes. Choose one that makes the directive and its file name distinct and clear. Some examples are below, but see the [Naming](#naming) section for more recommendations.
@@ -835,20 +824,16 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app.widgets')
-      .directive('myCalendarRange', myCalendarRange);
+      .directive('myCalendarRange', function(){
+          return {
+              templateUrl: '/template/is/located/here.html',
+              restrict: 'C',
+              link: function(scope, element, attrs) {
+                /* */
+              }
+          }
+      });
 
-  function myCalendarRange() {
-      var directive = {
-          link: link,
-          templateUrl: '/template/is/located/here.html',
-          restrict: 'C'
-      };
-      return directive;
-
-      function link(scope, element, attrs) {
-        /* */
-      }
-  }
   ```
 
   ```html
@@ -861,20 +846,15 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* recommended */
   angular
       .module('app.widgets')
-      .directive('myCalendarRange', myCalendarRange);
-
-  function myCalendarRange() {
-      var directive = {
-          link: link,
-          templateUrl: '/template/is/located/here.html',
-          restrict: 'EA'
-      };
-      return directive;
-
-      function link(scope, element, attrs) {
-        /* */
-      }
-  }
+      .directive('myCalendarRange', function(){
+          return {
+              templateUrl: '/template/is/located/here.html',
+              restrict: 'E',
+              link: function(scope, element, attrs) {
+                /* */
+              }
+          }
+      });
   ```
 
 ### Directives schema
@@ -983,17 +963,17 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app')
-      .controller('AvengersController', AvengersController);
-
-  function AvengersController(movieService) {
-      var vm = this;
-      // unresolved
-      vm.movies;
-      // resolved asynchronously
-      movieService.getMovies().then(function(response) {
-          vm.movies = response.movies;
+      .controller('AvengersController', function(movieService) {
+          var viewModel = this;
+          // unresolved
+          viewModel.movies;
+          // resolved asynchronously
+          movieService.getMovies().then(function(response) {
+              viewModel.movies = response.movies;
+          });
       });
-  }
+
+  
   ```
 
   ```javascript
