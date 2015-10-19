@@ -47,12 +47,12 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app', ['ngRoute'])
-      .controller('SomeController', function(){
+      .controller('SomeController', [function(){
           /* */
-      })
-      .factory('someFactory', function(){
+      }])
+      .factory('someFactory', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -72,9 +72,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // someController.js
   angular
       .module('app')
-      .controller('SomeController', function(){
+      .controller('SomeController', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -84,9 +84,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // someFactory.js
   angular
       .module('app')
-      .factory('someFactory', function(){
+      .factory('someFactory', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -115,10 +115,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // storage.js
   angular
       .module('app')
-      .factory('storage', storage);
+      .factory('storage', [function(){
+          /* */
+      }]);
 
-  // storage function is added as a global variable
-  function storage() { }
   ```
 
   ```javascript
@@ -134,9 +134,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
       angular
           .module('app')
-          .factory('logger', function(){
+          .factory('logger', [function(){
               /* */
-          });
+          }]);
 
   })();
 
@@ -146,9 +146,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
 
       angular
           .module('app')
-          .factory('storage', function(){
+          .factory('storage', [function(){
               /* */
-          });
+          }]);
 
   })();
   ```
@@ -208,9 +208,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   ```javascript
   /* avoid */
   var app = angular.module('app');
-  app.controller('SomeController', function(){
+  app.controller('SomeController', [function(){
     /* */
-  });
+  }]);
 
   ```
 
@@ -218,9 +218,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* recommended */
   angular
       .module('app')
-      .controller('SomeController', function(){
+      .controller('SomeController', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -253,9 +253,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   
   angular
       .module('app')
-      .controller('DashboardController', DashboardController);
+      .controller('DashboardController', [function(){
+          /* */
+      }]);
 
-  function DashboardController() { }  
   ```
 
   ```javascript
@@ -263,9 +264,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   
   angular
       .module('app')
-      .controller('DashboardController', function() {
+      .controller('DashboardController', [function() {
           /* */
-      });
+      }]);
   ```
 
 **[Back to top](#table-of-contents)**
@@ -503,11 +504,11 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // service
   angular
       .module('app')
-      .service('logger', function(){
+      .service('logger', [function(){
           this.logError = function(msg) {
             /* */
           };
-      });
+      }]);
 
   ```
 
@@ -515,13 +516,13 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // factory
   angular
       .module('app')
-      .factory('logger', function(){
+      .factory('logger', [function(){
           return {
               logError: function(msg) {
                 /* */
               }
          };
-      });
+      }]);
 
   ```
 
@@ -593,29 +594,26 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // dataservice factory
   angular
       .module('app.core')
-      .factory('dataservice', dataservice);
+      .factory('dataservice', ['$http', 'logger', function($http, logger) {
+          return {
+              getAvengers: function() {
+                  return $http.get('/api/maa')
+                      .then(getAvengersComplete)
+                      .catch(getAvengersFailed);
+        
+                  function getAvengersComplete(response) {
+                      return response.data.results;
+                  }
+        
+                  function getAvengersFailed(error) {
+                      logger.error('XHR Failed for getAvengers.' + error.data);
+                  }
+              }
+          };
+    
+          
+      }]);
 
-  dataservice.$inject = ['$http', 'logger'];
-
-  function dataservice($http, logger) {
-      return {
-          getAvengers: getAvengers
-      };
-
-      function getAvengers() {
-          return $http.get('/api/maa')
-              .then(getAvengersComplete)
-              .catch(getAvengersFailed);
-
-          function getAvengersComplete(response) {
-              return response.data.results;
-          }
-
-          function getAvengersFailed(error) {
-              logger.error('XHR Failed for getAvengers.' + error.data);
-          }
-      }
-  }
   ```
 
     Note: The data service is called from consumers, such as a controller, hiding the implementation from the consumers, as shown below.
@@ -626,29 +624,26 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   // controller calling the dataservice factory
   angular
       .module('app.avengers')
-      .controller('AvengersController', AvengersController);
-
-  AvengersController.$inject = ['dataservice', 'logger'];
-
-  function AvengersController(dataservice, logger) {
-      this.avengers = [];
-
-      activate();
-
-      function activate() {
-          return getAvengers().then(function() {
-              logger.info('Activated Avengers View');
-          });
-      }
-
-      let getAvengers = () => {
-          return dataservice.getAvengers()
-              .then((data) => {
-                  this.avengers = data;
-                  return this.avengers;
+      .controller('AvengersController', ['dataservice', 'logger', function(dataservice, logger) {
+          this.avengers = [];
+    
+          activate();
+    
+          function activate() {
+              return getAvengers().then(function() {
+                  logger.info('Activated Avengers View');
               });
-      }
-  }
+          }
+    
+          let getAvengers = () => {
+              return dataservice.getAvengers()
+                  .then((data) => {
+                      this.avengers = data;
+                      return this.avengers;
+                  });
+          }
+      }]);
+
   ```
 
 ### Return a Promise from Data Calls
@@ -718,19 +713,19 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
       .module('app.widgets')
 
       /* order directive that is specific to the order module */
-      .directive('orderCalendarRange', function(){
+      .directive('orderCalendarRange', [function(){
           /* */
-      })
+      }])
 
       /* sales directive that can be used anywhere across the sales app */
-      .directive('salesCustomerInfo', function(){
+      .directive('salesCustomerInfo', [function(){
           /* */
-      })
+      }])
 
       /* spinner directive that can be used anywhere across apps */
-      .directive('sharedSpinner', function(){
+      .directive('sharedSpinner', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -744,9 +739,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('sales.order')
-      .directive('acmeOrderCalendarRange', function(){
+      .directive('acmeOrderCalendarRange', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -760,9 +755,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('sales.widgets')
-      .directive('acmeSalesCustomerInfo', function(){
+      .directive('acmeSalesCustomerInfo', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -776,9 +771,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
    */
   angular
       .module('shared.widgets')
-      .directive('acmeSharedSpinner', function(){
+      .directive('acmeSharedSpinner', [function(){
           /* */
-      });
+      }]);
 
   ```
 
@@ -820,7 +815,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app.widgets')
-      .directive('myCalendarRange', function(){
+      .directive('myCalendarRange', [function(){
           return {
               templateUrl: '/template/is/located/here.html',
               restrict: 'C',
@@ -828,7 +823,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
                 /* */
               }
           }
-      });
+      }]);
 
   ```
 
@@ -842,7 +837,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* recommended */
   angular
       .module('app.widgets')
-      .directive('myCalendarRange', function(){
+      .directive('myCalendarRange', [function(){
           return {
               templateUrl: '/template/is/located/here.html',
               restrict: 'E',
@@ -850,7 +845,7 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
                 /* */
               }
           }
-      });
+      }]);
   ```
 
 ### Directives schema
@@ -959,14 +954,14 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
   /* avoid */
   angular
       .module('app')
-      .controller('AvengersController', function(movieService) {
+      .controller('AvengersController', [function(movieService) {
           // unresolved
           this.movies;
           // resolved asynchronously
           movieService.getMovies().then((response) => {
               this.movies = response.movies;
           });
-      });
+      }]);
 
   
   ```
@@ -1309,9 +1304,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // avengers.controller.js
     angular
         .module
-        .controller('HeroAvengersController', HeroAvengersController);
+        .controller('HeroAvengersController', [function(){
+            /* */
+        }]);
 
-    function HeroAvengersController() { }
     ```
 
 ### Controller Name Suffix
@@ -1329,9 +1325,10 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // avengers.controller.js
     angular
         .module
-        .controller('AvengersController', AvengersController);
+        .controller('AvengersController', [function(){
+            /* */
+        }]);
 
-    function AvengersController() { }
     ```
 
 ### Factory and Service Names
@@ -1353,9 +1350,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // avengers.logger.service.js
     angular
         .module
-        .factory('avLoggerService', function(){
+        .factory('avLoggerService', [function(){
             /* */
-        });
+        }]);
 
     ```
 
@@ -1367,16 +1364,16 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // avengers.credit.service.js
     angular
         .module
-        .factory('avCreditService', function(){
+        .factory('avCreditService', [function(){
             /* */
-        });
+        }]);
 
     // avengers.customer.service.js
     angular
         .module
-        .service('avCustomerService', function(){
+        .service('avCustomerService', [function(){
             /* */
-        });
+        }]);
 
     ```
 
@@ -1395,9 +1392,9 @@ Sample app from original author can be found here: [https://github.com/johnpapa/
     // avengers.avenger-profile.directive.component.js
     angular
         .module
-        .directive('xxAvengerProfileCp', function(){
+        .directive('xxAvengerProfileCp', [function(){
             /* */
-        });
+        }]);
 
     // usage is <xx-avenger-profile-cp> </xx-avenger-profile-cp>
 
